@@ -6,8 +6,10 @@ file = open(path_to_concept_file, "r", encoding='utf8')
 
 def getProcessedConcepts():
     concepts = []
+    raw = []
     # Pre processing
     for line in file.readlines():
+        raw.append(line.replace("\n", ""))
         for match in re.findall("[A-Z/_]", line):
             line = line.replace(match, " " + match)
             line = line.replace("\n", "")
@@ -18,4 +20,4 @@ def getProcessedConcepts():
             line = line.replace(" And ", " ")
             line = re.sub(' +', ' ', line)
         concepts.append(line.strip().lower())
-    return concepts
+    return concepts, raw

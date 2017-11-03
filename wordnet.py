@@ -1,4 +1,4 @@
-import re
+from PreProcess import getProcessedConcepts
 from nltk.corpus import wordnet as wn
 import time
 
@@ -7,21 +7,9 @@ current_milli_time = lambda: int(round(time.time() * 1000))
 file = open("C:\\Users\\myste\\Google Drive\\CMU\\Sem1\\Research\\Concepts\\concepts.txt", "r", encoding='utf8')
 lines = []
 
-#Preprocessing
-for line in file.readlines():
-    for match in re.findall("[A-Z/_]", line):
-        line = line.replace(match," " + match)
-        line = line.replace("\n","")
-        line = line.replace("_", "")
-        line = line.replace("/", "")
-        line = line.replace(" A ", " ")
-        line = line.replace(" The ", " ")
-        line = line.replace(" And ", " ")
-        line = re.sub(' +', ' ', line)
-    lines.append(line.strip().lower())
-print(lines)
+lines = concepts = getProcessedConcepts()
 
-#Filling up synsets for each concept
+# Filling up synsets for each concept
 synsets = []
 for line in lines:
     sublist = []
@@ -31,6 +19,7 @@ for line in lines:
             break;
     synsets.append(sublist)
 print(synsets)
+
 
 def wupBestMatch(query):
     query = query.lower()
@@ -52,7 +41,7 @@ def wupBestMatch(query):
         for querySyn in querySyns:
             for syn in synList:
                 indScore = wn.wup_similarity(querySyn, syn);
-                if (indScore != None):
+                if indScore is not None:
                     scoreWup += indScore
                 else:
                     noMatchWup += 1
@@ -65,6 +54,7 @@ def wupBestMatch(query):
     print("Best match Wup similarity: " + lines[maxIdxWup] + " :: ", maxScoreWup)
     print("Found in %d millisecs" % (current_milli_time() - st))
 
+
 def lchBestMatch(query):
     query = query.lower()
     print("Finding best match for " + query)
@@ -75,7 +65,7 @@ def lchBestMatch(query):
             querySyns.append(querySyn)
             break;
 
-    #Finding similar concept
+    # Finding similar concept
     maxScoreLch = 0
     maxIdxLch = 0
     idx = 0
@@ -85,9 +75,9 @@ def lchBestMatch(query):
         for querySyn in querySyns:
             for syn in synList:
                 indScore = 0
-                if (querySyn._pos == syn._pos):
+                if querySyn._pos == syn._pos:
                     indScore = wn.lch_similarity(querySyn, syn)
-                if (indScore != None):
+                if (indScore is not None):
                     scoreLch += indScore
                 else:
                     noMatchLch += 1
@@ -100,8 +90,7 @@ def lchBestMatch(query):
     print("Best match Lch similarity: " + lines[maxIdxLch] + " :: ",maxScoreLch)
     print("Found in %d millisecs" % (current_milli_time() - st))
 
-##Testing
-
+# Testing
 query1 = "hgfdgfkhuflkdflu"
 query2 = "No white trains"
 query3 = "Regular soccer match"
