@@ -1,14 +1,27 @@
 import numpy as np
 import time
+import re
 from nltk.corpus import wordnet as wn
 from tfIdf import idf
-from PreProcess import getProcessedConcepts
 from nlpTasks import getSynonyms, getVerbs, getNouns
 
 # To compute time
 current_millis_time = lambda: int(round(time.time() * 1000))
 # Getting concepts extracted from videos
-lines, raw = getProcessedConcepts()
+data_dir = "C:\\Users\\myste\\Google Drive\\CMU\\Sem1\\Research\\Data\\AVS\\AVS_concept_detection\\AVS_concept_detection\\"
+concepts_sin = "concept_names_ImageNet.txt"
+#concepts_sin = "concept_names_SIN.txt"
+file = open(data_dir+concepts_sin, "r", encoding='utf8')
+# Getting all the concepts
+print("Extracting SIN concepts....")
+concepts = []
+for line in file.readlines():
+    line = line.split(":")[1].strip()
+    line = line.replace("\n", "")
+    for match in re.findall("_", line):
+        line = line.replace("_", " ")
+    concepts.append(line)
+print("Extracting SIN concepts....[OK]")
 
 
 def computeSimilarity(queryPhrase, concept):
@@ -37,6 +50,7 @@ def computeSimilarity(queryPhrase, concept):
 
 
 def getConcepts(sentence):
+    sentence = sentence.replace("\n", "")
     print(sentence)
     st = current_millis_time()
     nouns = getNouns(sentence)
@@ -52,14 +66,14 @@ def getConcepts(sentence):
                 biPhrases.append(p + " " + phrase)
     phrases = biPhrases
     numPhrases = len(phrases)
-    numConcepts = len(lines)
+    numConcepts = len(concepts)
 
     #Similarity Matrix
     S = np.zeros((numConcepts, numPhrases))
 
     for i in range(0, numConcepts):
         for j in range(0, numPhrases):
-            ss = computeSimilarity(phrases[j], lines[i])
+            ss = computeSimilarity(phrases[j], concepts[i])
             S[i][j] = ss
     sMax = S.max(0)
     for j in range(0, numPhrases):
@@ -72,11 +86,14 @@ def getConcepts(sentence):
     i = 0
     listOfConcepts = []
     conceptScores = []
-    for line in raw:
+    arr = np.zeros(len(concepts))
+    for line in concepts:
         if conceptVector[i] != 0:
+            arr[i] = conceptVector[i]
             listOfConcepts.append(line)
             conceptScores.append(conceptVector[i])
         i = i + 1
     print("Computed in {} milli secs".format(current_millis_time() - st))
     print(str(listOfConcepts))
     print(str(conceptScores))
+    return arr
