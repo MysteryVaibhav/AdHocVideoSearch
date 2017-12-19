@@ -1,4 +1,4 @@
-from ConceptVectors import getConcepts
+from hybridMatch import bestMatch
 
 query1 = "a girl cleaning utensils"
 query2 = "a girl washing floor"
@@ -9,28 +9,29 @@ query6 = "man hugging a women"
 query7 = "Show me something blue"
 query8 = "When was the last time Jack tried skydiving?"
 query9 = "how many times has Jack travel to mountains?"
+
 #things to try: dog, rifle, squash, squeeze,green grass everywhere
 
 print("-------------------------------")
-getConcepts(query1)
+bestMatch(query1)
 print("-------------------------------")
-getConcepts(query2)
+bestMatch(query2)
 print("-------------------------------")
-getConcepts(query3)
+bestMatch(query3)
 print("-------------------------------")
-getConcepts(query4)
+bestMatch(query4)
 print("-------------------------------")
-getConcepts(query5)
+bestMatch(query5)
 print("-------------------------------")
-getConcepts(query6)
+bestMatch(query6)
 print("-------------------------------")
-getConcepts(query7)
+bestMatch(query7)
 print("-------------------------------")
-getConcepts(query8)
+bestMatch(query8)
 print("-------------------------------")
-getConcepts(query9)
+bestMatch(query9)
 print("-------------------------------")
 while True:
     query = input("Enter your query: ")
-    getConcepts(query)
+    bestMatch(query)
     print("-------------------------------")
